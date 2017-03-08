@@ -26,12 +26,56 @@ class Board
       end
       puts
     end
+    include?(template)
+  end
+
+  def include?(word)
+    word[0].each do |item|
+      search_rows(item, word[1])
+      search_rows_reverse(item, word[1])
+      search_columns(item, word[1])
+    end
+  end
+
+  def search_rows(word, board)
+    for row in 0..7
+      for col in 0..35
+        if board.byteslice(col, 5).include? word
+          return p "Se encontró la palabra #{word} en la fila #{row}."
+        else
+          col += 5
+        end
+      end
+    end
+  end
+
+  def search_rows_reverse(word, board)
+    for row in 0..7
+      for col in 0..35
+        if board.byteslice(col, 5).include? word.reverse
+          return p "Se encontró la palabra #{word} al revés en la fila #{row}."
+        else
+          col += 5
+        end
+      end
+    end
+  end
+
+  def search_columns(word, board)
+    for column in 0..4
+      palabra = board[column]
+      for row in 5..35
+        palabra += board[column + row]
+        row += 5
+      end
+      p palabra
+    end
   end
 
   private
 
   def complete_board!
-    @@templates.each{ |template| template[1].gsub!(/X/) {("A".."Z").to_a[rand(26)] if template[1] == 'X'} }
+    @@templates.each{ |template| template[1].gsub!(/X/) {("A".."Z").to_a[rand(26)]} }
   end
 end
 
