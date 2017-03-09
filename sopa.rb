@@ -6,13 +6,13 @@ class Board
     ]
  
   def initialize
-     complete_board!
+    complete_board!
   end
 
   def to_s
-    template = @@templates[rand(0..@@templates.length-1)]
+    # template = @@templates[rand(0..@@templates.length-1)]
+    template = @@templates[1]
     board = template[1]
-    p board
     for row in 0..7
       for col in 0..4
         print "#{board[col]} " if row == 0
@@ -32,43 +32,38 @@ class Board
   def include?(word)
     word[0].each do |item|
       search_rows(item, word[1])
-      search_rows_reverse(item, word[1])
       search_columns(item, word[1])
+      search_diagonal(item, word[1])
     end
   end
 
   def search_rows(word, board)
-    for row in 0..7
-      for col in 0..35
-        if board.byteslice(col, 5).include? word
-          return p "Se encontró la palabra #{word} en la fila #{row}."
-        else
-          col += 5
-        end
-      end
-    end
-  end
-
-  def search_rows_reverse(word, board)
-    for row in 0..7
-      for col in 0..35
-        if board.byteslice(col, 5).include? word.reverse
-          return p "Se encontró la palabra #{word} al revés en la fila #{row}."
-        else
-          col += 5
-        end
-      end
+    row = 0
+    board.scan(/...../).each do |item|
+      return p "Se encontró la palabra #{word} en la fila #{row}." if item.include? word
+      return p "Se encontró la palabra #{word} al revés en la fila #{row}." if item.include? word.reverse
+      row += 1
     end
   end
 
   def search_columns(word, board)
-    for column in 0..4
+     for column in 0..4
       palabra = board[column]
       for row in 5..35
-        palabra += board[column + row]
-        row += 5
+        palabra += board[column + row] if row % 5 == 0
       end
-      p palabra
+      return p "Se encontró la palabra #{word} en la columna #{column}." if palabra.include? word
+      return p "Se encontró la palabra #{word} al revés en la columna #{column}." if palabra.include? word.reverse
+    end
+  end
+
+  def search_diagonal(word, board)
+    p grid = board.scan(/...../)
+    palabra = ""
+    for col in 0..4
+      # palabra = gr
+      for row in 0..7
+      end
     end
   end
 
