@@ -90,7 +90,7 @@ class Board
         count_row += 1 
       end
       diff = count_letter - top_letter
-      count_letter -= diff if diff > 0
+      count_letter = top_letter if diff > 0
     end
     p array_words, top_row, top_row
   end  
