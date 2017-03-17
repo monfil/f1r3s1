@@ -12,8 +12,8 @@ class Board
   end
 
   def to_s
-    # template = @@templates[rand(0..@@templates.length-1)]
-    template = @@templates[2]
+    template = @@templates[rand(0..@@templates.length-1)]
+    #template = @@templates[2]
     board = template[1]
     for row in 0..7
       for col in 0..4
@@ -31,11 +31,11 @@ class Board
     include?(template)
   end
 
-  def include?(word)
-    word[0].each do |item|
-      search_rows(item, word[1])
-      search_columns(item, word[1])
-      search_diagonal(item, word[1])
+  def include?(template)
+    template[0].each do |item|
+      search_rows(item, template[1])
+      search_columns(item, template[1])
+      search_diagonal(item, template[1])
     end
   end
 
@@ -62,11 +62,13 @@ class Board
   def search_diagonal(word, board)
     grid = board.scan(/...../)
     matrix = Matrix[*grid.map{|item| item.split(//)}]
-    walk_grid(matrix.to_a)
-    walk_grid(matrix.transpose.to_a)
-    # p matrix.transpose
-    # p ma.each(wich = :diagonal).to_a
-    # p ma.transpose.each(wich = :diagonal).to_a
+    array_with_words = walk_grid(matrix.to_a)
+    array_with_words << walk_grid(matrix.transpose.to_a)
+    array_with_words << walk_grid_inverse(matrix.to_a)
+    array_with_words.flatten!.uniq!
+    array_with_words.each do |item|
+      return p "Se encontró la palabra #{word} en forma diagonal." if item.include? word or item.include? word.reverse
+    end
    end
 
   def walk_grid(grid)
@@ -77,7 +79,7 @@ class Board
     count_letter = 0
     count_row = 0
     get_word = ""
-    array_words = []
+    array_words = []  
 
     while count_row <= top_row
       while count_letter <= top_letter do
@@ -92,8 +94,34 @@ class Board
       diff = count_letter - top_letter
       count_letter = top_letter if diff > 0
     end
-    p array_words, top_row, top_row
-  end  
+    array_words
+  end
+
+  def walk_grid_inverse(grid)
+    top_row = grid.length-1
+    top_letter = grid[1].length-1
+    row = top_row
+    col = 4
+    count_letter = 0
+    count_row = 0
+    get_word = ""
+    array_words_inverse = []
+
+    while count_row <= top_row
+      while count_letter <= top_letter do
+        for x in 0..count_letter
+          get_word += grid[row - count_row + x][col - x]
+        end
+        array_words_inverse << get_word
+        get_word = ""
+        count_letter += 1
+        count_row += 1 
+      end
+      diff = count_letter - top_letter
+      count_letter = top_letter if diff > 0
+    end
+    array_words_inverse
+  end
 
   private
 
